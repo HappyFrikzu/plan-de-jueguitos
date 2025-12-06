@@ -3,32 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GDD Interactivo para Ascensión: La Torre de los 97.">
     <title>GDD: Ascensión - La Torre de los 97</title>
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-color: #0f0f13;
-            --card-bg: rgba(30, 30, 40, 0.9);
-            --text-main: #e0e0e0;
-            --accent: #00d4ff; /* Azul neón */
-            --accent-ranker: #ff0055; /* Rojo glitch */
+            /* PALETA NOCTURNA / ÉPICA */
+            --bg-color: #0b0d17; /* Azul noche casi negro */
+            --card-bg: rgba(20, 25, 40, 0.85); /* Azul oscuro semitransparente */
+            --text-main: #e0e6ed; /* Blanco azulado */
+            
+            --accent: #00d4ff; /* Cian Mágico */
+            --accent-ranker: #ff0055; /* Rojo Glitch */
+            
+            --stone: #5c5c6d; /* Color Piedra Torre */
+            --stone-dark: #3e3e4a;
+            
             --success: #00ff88;
             --gold: #ffd700;
             --repair: #ff9900; 
-            --danger: #ff3333; /* Para Bosses */
-            --death: #9d00ff; /* Color para muerte/stats */
+            --danger: #ff3333;
+            --death: #9d00ff;
         }
 
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Rajdhani', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             overflow-x: hidden;
             line-height: 1.6;
         }
 
-        /* CANVAS DE FONDO */
+        /* FONDO CIELO ESTRELLADO */
+        #world-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            /* Gradiente de Cielo Nocturno */
+            background: radial-gradient(circle at 50% 10%, #1a237e 0%, #000000 80%);
+        }
+
         canvas {
             position: fixed;
             top: 0;
@@ -50,15 +73,16 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-top: 0;
+            font-family: 'Cinzel', serif;
         }
 
         h1 {
-            font-size: 3.5rem;
+            font-size: 4rem;
             text-align: center;
             border-bottom: 2px solid var(--accent);
             padding-bottom: 20px;
             margin-bottom: 50px;
-            text-shadow: 0 0 15px var(--accent);
+            text-shadow: 0 0 20px var(--accent);
             background: -webkit-linear-gradient(#fff, var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -73,17 +97,18 @@
 
         .section-card {
             background: var(--card-bg);
-            border: 1px solid #444;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             padding: 30px;
             margin-bottom: 30px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             transition: transform 0.2s;
         }
 
         .section-card:hover {
-            border-color: #666;
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
         }
 
         /* GRID DE CLASES */
@@ -94,7 +119,7 @@
         }
 
         .class-card {
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             border: 1px solid #444;
             padding: 20px;
             border-radius: 8px;
@@ -104,7 +129,6 @@
         .class-card:hover {
             transform: translateY(-5px);
             border-color: var(--accent);
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2);
         }
 
         .class-title {
@@ -119,7 +143,7 @@
 
         .ranker-card {
             border: 1px solid var(--accent-ranker);
-            background: linear-gradient(135deg, rgba(40,0,10,0.8), rgba(0,0,0,0.6));
+            background: linear-gradient(135deg, rgba(60, 0, 20, 0.6), rgba(0,0,0,0.6));
         }
         .ranker-card .class-title { 
             color: var(--accent-ranker); 
@@ -133,19 +157,19 @@
 
         ul.skills-list li {
             margin-bottom: 10px;
-            font-size: 0.9rem;
+            font-size: 1rem;
             border-bottom: 1px solid rgba(255,255,255,0.05);
             padding-bottom: 5px;
         }
 
         .key {
             font-weight: bold;
-            color: #0f0f13;
+            color: #0b0d17;
             background: var(--accent);
             padding: 2px 6px;
             border-radius: 4px;
             margin-right: 8px;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             min-width: 25px;
             display: inline-block;
             text-align: center;
@@ -181,7 +205,7 @@
 
         /* SIMULADOR */
         .simulator-box {
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.4);
             padding: 20px;
             border-radius: 8px;
             border-left: 4px solid var(--success);
@@ -199,7 +223,7 @@
         }
         label { font-size: 0.8rem; margin-bottom: 5px; color: #aaa; }
         input[type="number"] {
-            background: #222;
+            background: #1a1a2e;
             border: 1px solid #444;
             color: white;
             padding: 8px;
@@ -207,8 +231,8 @@
             width: 100px;
         }
         button.btn-calc {
-            background: var(--success);
-            color: #000;
+            background: var(--accent);
+            color: #0b0d17;
             border: none;
             padding: 10px 20px;
             border-radius: 4px;
@@ -221,11 +245,11 @@
         .result-display {
             font-size: 1.2rem;
             font-weight: bold;
-            color: var(--success);
+            color: var(--accent);
         }
         .formula-display {
             font-family: 'Courier New', Courier, monospace;
-            background: #111;
+            background: #0b0d17;
             padding: 10px;
             border-radius: 4px;
             color: #aaa;
@@ -244,7 +268,9 @@
             padding: 15px;
             border-radius: 6px;
             text-align: center;
+            border: 1px solid transparent;
         }
+        .biome-item:hover { border-color: var(--accent); }
         .biome-floor { font-size: 1.2rem; font-weight: bold; color: var(--accent); display: block; }
         
         /* TABLA ECONOMÍA */
@@ -281,7 +307,7 @@
         .dura-bar-bg {
             flex-grow: 1;
             height: 8px;
-            background: #333;
+            background: #222;
             border-radius: 4px;
             overflow: hidden;
             margin-right: 10px;
@@ -307,7 +333,7 @@
         /* ESTILO BOSS DANGER */
         .boss-warning {
             border: 1px solid var(--danger);
-            background: rgba(50, 10, 10, 0.8);
+            background: rgba(50, 10, 10, 0.6);
             padding: 15px;
             border-radius: 8px;
             margin-top: 20px;
@@ -333,7 +359,7 @@
         }
         .stat-box {
             background: rgba(0,0,0,0.3);
-            border: 1px solid #555;
+            border: 1px solid #444;
             padding: 15px;
             border-radius: 6px;
         }
@@ -349,6 +375,7 @@
 </head>
 <body>
 
+    <div id="world-container"></div>
     <canvas id="bgCanvas"></canvas>
 
     <div class="container">
@@ -663,6 +690,9 @@
     </div>
 
     <script>
+        // --- LOGICA DE FONDO (GRADIENTE SCROLL) ---
+        // Se mantiene simple con el CSS fixed
+        
         // --- LÓGICA DEL SIMULADOR ---
         function calculateDamage() {
             const atk = parseFloat(document.getElementById('atkInput').value);
@@ -679,10 +709,10 @@
             document.getElementById('mitigationOutput').innerText = mitigationPercent + "%";
         }
 
-        // --- ANIMACIÓN FONDO (PARTÍCULAS) ---
+        // --- ANIMACIÓN FONDO: TORRE LOW POLY + ESTRELLAS ---
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
-        let particlesArray;
+        let starsArray = [];
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -690,52 +720,214 @@
         }
         window.addEventListener('resize', () => {
             resizeCanvas();
-            init();
+            initStars();
         });
         resizeCanvas();
 
-        class Particle {
+        // Clase para Estrellas
+        class StarPixel {
             constructor() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
                 this.size = Math.random() * 2;
-                this.speedY = Math.random() * 0.5 + 0.2;
-                this.opacity = Math.random() * 0.5 + 0.1;
-                this.color = `rgba(0, 212, 255, ${this.opacity})`;
+                this.speed = Math.random() * 0.05;
+                this.brightness = Math.random();
+                this.change = Math.random() * 0.02;
             }
             update() {
-                this.y -= this.speedY;
-                if (this.y < 0) {
-                    this.y = canvas.height;
-                    this.x = Math.random() * canvas.width;
+                this.brightness += this.change;
+                if (this.brightness > 1 || this.brightness < 0) {
+                    this.change = -this.change;
                 }
             }
             draw() {
-                ctx.fillStyle = this.color;
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.brightness})`;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
 
-        function init() {
-            particlesArray = [];
-            const numberOfParticles = Math.floor(window.innerWidth / 10); 
-            for (let i = 0; i < numberOfParticles; i++) {
-                particlesArray.push(new Particle());
+        // DIBUJO DE LA TORRE (Estática, estilo Low Poly de Piedra)
+        function drawTower() {
+            const centerX = canvas.width / 2;
+            const towerWidth = Math.min(300, canvas.width * 0.4);
+            const groundY = canvas.height;
+            const towerHeight = canvas.height * 0.8;
+            
+            ctx.save();
+            
+            // 1. Colina Base (Verde oscuro nocturno)
+            ctx.beginPath();
+            ctx.ellipse(centerX, groundY, towerWidth * 1.5, 100, 0, 0, Math.PI * 2);
+            ctx.fillStyle = "#1b262c";
+            ctx.fill();
+
+            // 2. Cuerpo de la Torre (Cilindro simulado con rectángulos para Low Poly)
+            // Color base piedra
+            const stoneColor = "#3e3e4a";
+            const stoneLight = "#5c5c6d";
+            const stoneShadow = "#2b2b36";
+
+            // Dibujar cuerpo principal
+            ctx.fillStyle = stoneColor;
+            // Trapezio sutil para perspectiva
+            ctx.beginPath();
+            ctx.moveTo(centerX - towerWidth/2, groundY);
+            ctx.lineTo(centerX + towerWidth/2, groundY);
+            ctx.lineTo(centerX + towerWidth/2 - 20, groundY - towerHeight); // Se estrecha arriba
+            ctx.lineTo(centerX - towerWidth/2 + 20, groundY - towerHeight);
+            ctx.closePath();
+            ctx.fill();
+
+            // Detalles "Low Poly" - Bloques de piedra
+            // Dibujamos líneas horizontales y verticales aleatorias para simular bloques
+            ctx.strokeStyle = stoneShadow;
+            ctx.lineWidth = 2;
+            const rows = 15;
+            for(let i=0; i<rows; i++) {
+                let y = groundY - (towerHeight / rows) * i;
+                let nextY = groundY - (towerHeight / rows) * (i+1);
+                
+                // Línea horizontal (anillos)
+                ctx.beginPath();
+                ctx.moveTo(centerX - towerWidth/2 + (i*1.2), y);
+                ctx.lineTo(centerX + towerWidth/2 - (i*1.2), y);
+                ctx.stroke();
+
+                // Líneas verticales (ladrillos) - alternadas
+                let bricks = 4;
+                let w = (towerWidth - (i*2.4)); 
+                let startX = centerX - w/2;
+                let brickW = w / bricks;
+                
+                for(let j=0; j<=bricks; j++) {
+                    let offset = (i % 2 === 0) ? 0 : brickW/2;
+                    let x = startX + (j * brickW) + offset;
+                    if(x < startX + w && x > startX) {
+                        ctx.beginPath();
+                        ctx.moveTo(x, y);
+                        ctx.lineTo(x, nextY);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // 3. Parte Superior (Turret / Almenas)
+            const topY = groundY - towerHeight;
+            const topWidth = towerWidth + 20; // Más ancha que el cuerpo
+            const turretHeight = 60;
+
+            // Base de la torreta
+            ctx.fillStyle = stoneLight;
+            ctx.fillRect(centerX - topWidth/2, topY - turretHeight, topWidth, turretHeight);
+            
+            // Almenas (Dientes)
+            const teeth = 5;
+            const toothW = topWidth / (teeth * 2 - 1);
+            ctx.fillStyle = stoneLight;
+            for(let k=0; k<teeth; k++) {
+                ctx.fillRect(centerX - topWidth/2 + (k * toothW * 2), topY - turretHeight - 20, toothW, 20);
+            }
+
+            // Puerta
+            const doorHeight = 80;
+            const doorWidth = 50;
+            ctx.fillStyle = "#3e2723"; // Madera oscura
+            ctx.beginPath();
+            ctx.moveTo(centerX - doorWidth/2, groundY);
+            ctx.lineTo(centerX - doorWidth/2, groundY - doorHeight + 20);
+            ctx.arc(centerX, groundY - doorHeight + 20, doorWidth/2, Math.PI, 0); // Arco puerta
+            ctx.lineTo(centerX + doorWidth/2, groundY);
+            ctx.fill();
+
+            // Ventana
+            const winY = topY + 150;
+            ctx.fillStyle = "#000";
+            ctx.beginPath();
+            ctx.arc(centerX, winY, 15, 0, Math.PI*2);
+            ctx.fill();
+            // Luz ventana
+            ctx.fillStyle = "rgba(255, 215, 0, 0.6)"; // Luz amarilla tenue
+            ctx.beginPath();
+            ctx.arc(centerX, winY, 12, 0, Math.PI*2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // Estrella Brillante en la cima
+        function drawBigStar(time) {
+            const centerX = canvas.width / 2;
+            const towerHeight = canvas.height * 0.8;
+            const topY = canvas.height - towerHeight - 100; // Flotando sobre la torre
+
+            ctx.save();
+            ctx.translate(centerX, topY);
+            
+            // Pulso
+            const scale = 1 + Math.sin(time * 0.002) * 0.1;
+            ctx.scale(scale, scale);
+            
+            // Brillo externo
+            let grd = ctx.createRadialGradient(0, 0, 5, 0, 0, 60);
+            grd.addColorStop(0, "rgba(255, 255, 255, 1)");
+            grd.addColorStop(0.5, "rgba(0, 212, 255, 0.5)"); // Cian
+            grd.addColorStop(1, "rgba(0, 0, 0, 0)");
+            ctx.fillStyle = grd;
+            ctx.beginPath();
+            ctx.arc(0, 0, 60, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Forma de estrella Low Poly (Diamante)
+            ctx.fillStyle = "#fff";
+            ctx.beginPath();
+            ctx.moveTo(0, -20);
+            ctx.lineTo(15, 0);
+            ctx.lineTo(0, 20);
+            ctx.lineTo(-15, 0);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Rayos cruzados
+            ctx.strokeStyle = "#00d4ff";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, -40); ctx.lineTo(0, 40);
+            ctx.moveTo(-40, 0); ctx.lineTo(40, 0);
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        function initStars() {
+            starsArray = [];
+            for(let i=0; i<150; i++) {
+                starsArray.push(new StarPixel());
             }
         }
 
+        let time = 0;
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-                particlesArray[i].draw();
+            
+            // 1. Dibujar Estrellas (Fondo)
+            for (let i = 0; i < starsArray.length; i++) {
+                starsArray[i].update();
+                starsArray[i].draw();
             }
+
+            // 2. Dibujar Torre (Medio)
+            drawTower();
+
+            // 3. Dibujar Estrella Guía (Frente)
+            time++;
+            drawBigStar(time);
+
             requestAnimationFrame(animate);
         }
 
-        init();
+        initStars();
         animate();
     </script>
 </body>
